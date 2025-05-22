@@ -27,13 +27,20 @@ def main(csv_path: str, app_id: int, template_name: str, is_custom: bool):
     print(f"Resolved template ID: {template_id}, is_custom: {is_custom_template}")
 
     if is_custom_template:
-        validated_df, errors = validate_custom_template(df, template_id)
+        try:
+            validated_df, errors = validate_custom_template(df, template_id)
+        except Exception as e:
+            print("Unexpected validation error:", str(e))
+            return
     else:
-        validated_df, errors = validate_default_template(df, template_id)
+        try:
+            validated_df, errors = validate_default_template(df, template_id)
+        except Exception as e:
+            print("Unexpected validation error:", str(e))
+            return
 
     if errors:
         print("Validation Errors:")
-        #print(errors.to_string(index=False))
         print(json.dumps(errors, indent=2))
     else:
         print("Validation Passed.")
